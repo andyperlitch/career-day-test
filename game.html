@@ -14,12 +14,12 @@ p{font-size:1.3rem}
 <script>
 const c=document.getElementById('c'),x=c.getContext('2d'),W=960,H=540,G=0.7;
 const keys={};onkeydown=e=>{keys[e.key.toLowerCase()]=1;if([' ','arrowup','arrowdown','arrowleft','arrowright'].includes(e.key.toLowerCase()))e.preventDefault();if(state!=='play'&&(e.key===' '||e.key==='Enter'))reset()};onkeyup=e=>keys[e.key.toLowerCase()]=0;
-const plats=[[0,480,700],[800,480,500],[1400,400,220],[1700,330,200],[1980,420,400],[2500,360,240],[2830,280,200],[3120,480,700],[3950,480,600]];
-const goal={x:4300,y:330};
-let p,aliens,camX,state,stars=[],flame=0,rocketY;
+const plats=[[0,480,650],[760,480,450],[1300,400,200],[1560,480,2000],[1950,400,150],[2120,315,150],[2290,230,150],[2460,145,150],[2630,60,150],[2800,-25,150],[2970,-110,150],[3140,-195,150],[3310,-280,300]];
+const goal={x:3420,y:-430};
+let p,aliens,camX,camY=0,state,stars=[],flame=0,rocketY;
 for(let i=0;i<150;i++)stars.push([Math.random()*5000,Math.random()*H,Math.random()*2+1]);
-function reset(){p={x:60,y:400,vx:0,vy:0,w:40,h:56,on:false};camX=0;state='play';rocketY=goal.y;
-aliens=[[900,480,800,1250],[2050,420,1990,2350],[2550,360,2510,2720],[3300,480,3150,3780],[3500,480,3150,3780]].map(a=>({x:a[0],y:a[1]-40,min:a[2],max:a[3],d:1.6+Math.random()}))}
+function reset(){p={x:60,y:400,vx:0,vy:0,w:40,h:56,on:false};camX=0;camY=0;state='play';rocketY=goal.y;
+aliens=[[900,480,780,1190],[1650,480,1580,1900]].map(a=>({x:a[0],y:a[1]-40,min:a[2],max:a[3],d:1.6+Math.random()}))}
 reset();
 function update(){if(state!=='play')sfx.rolling(0,false);if(state==='win'){rocketY-=6;flame++;return}if(state!=='play')return;
 const L=keys['arrowleft']||keys['a'],R=keys['arrowright']||keys['d'];
@@ -31,7 +31,7 @@ sfx.rolling(p.vx,p.on);if(p.y>H+100)state='lose';
 for(const a of aliens){a.x+=a.d;if(a.x<a.min||a.x>a.max-40)a.d*=-1;a.y+=Math.sin(Date.now()/200+a.min)*0.6;
 if(p.x+p.w-8>a.x&&p.x+8<a.x+40&&p.y+p.h-6>a.y&&p.y+6<a.y+40)state='lose'}
 if(p.x+p.w>goal.x&&p.x<goal.x+80&&p.y+p.h>goal.y)state='win';
-camX=Math.max(0,Math.min(p.x-300,4600-W))}
+camX=Math.max(0,Math.min(p.x-300,3700-W));camY=Math.min(0,p.y-260)}
 function astronaut(X,Y){x.fillStyle='#e50914';x.fillRect(X-4,Y+50,48,7);x.fillStyle='#333';x.beginPath();x.arc(X+6,Y+60,5,0,7);x.arc(X+34,Y+60,5,0,7);x.fill();
 x.fillStyle='#fff';x.fillRect(X+8,Y+22,24,28);x.fillRect(X+4,Y+44,10,8);x.fillRect(X+26,Y+44,10,8);x.beginPath();x.arc(X+20,Y+14,15,0,7);x.fill();
 x.fillStyle='#4fc3f7';x.beginPath();x.ellipse(X+24,Y+14,9,7,0,0,7);x.fill();x.fillStyle='#e50914';x.fillRect(X+14,Y+30,12,6)}
@@ -43,12 +43,12 @@ x.fillStyle='#4fc3f7';x.beginPath();x.arc(X+40,Y+70,10,0,7);x.fill();
 if(state==='win'){x.fillStyle=flame%6<3?'#ffb300':'#ff5722';x.beginPath();x.moveTo(X+25,Y+150);x.lineTo(X+40,Y+200+Math.random()*30);x.lineTo(X+55,Y+150);x.fill()}}
 function txt(s,y,sz,col){x.font='bold '+sz+'px system-ui';x.textAlign='center';x.fillStyle=col||'#fff';x.fillText(s,W/2,y)}
 function draw(){x.fillStyle='#0b0b2a';x.fillRect(0,0,W,H);x.fillStyle='#fff';for(const[sx,sy,r]of stars)x.fillRect(((sx-camX*0.3)%W+W)%W,sy,r,r);
-x.save();x.translate(-camX,0);
+x.save();x.translate(-camX,-camY);x.fillStyle='#5d4037';x.beginPath();x.moveTo(1900,600);x.lineTo(3460,-280);x.lineTo(3700,600);x.fill();x.fillStyle='#fff';x.beginPath();x.moveTo(3360,-200);x.lineTo(3460,-280);x.lineTo(3560,-200);x.fill();
 for(const[a,b,w]of plats){x.fillStyle='#8e44ad';x.fillRect(a,b,w,H-b);x.fillStyle='#e50914';x.fillRect(a,b,w,10)}
 rocket(goal.x,state==='win'?rocketY:goal.y-0);
 for(const a of aliens)alien(a);if(state!=='win')astronaut(p.x,p.y);x.restore();
 if(state==='lose'){x.fillStyle='rgba(0,0,0,.6)';x.fillRect(0,0,W,H);txt('Oh no! 👽',230,64,'#7CFC00');txt('Press SPACE to try again',300,36)}
-if(state==='win'&&rocketY<-200){txt('🚀 BLAST OFF! You made it to space! 🚀',230,44,'#ffb300');txt('Press SPACE to play again',300,32)}}
+if(state==='win'&&rocketY<goal.y-700){txt('🚀 BLAST OFF! You made it to space! 🚀',230,44,'#ffb300');txt('Press SPACE to play again',300,32)}}
 (function loop(){update();draw();requestAnimationFrame(loop)})();
 </script>
 <script src="sfx.js"></script><script src="music.js"></script><script src="live-reload.js"></script></body></html>
