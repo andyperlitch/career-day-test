@@ -1,0 +1,1 @@
+(function(){let last=null;async function check(){try{const r=await fetch(location.pathname+'?_='+Date.now(),{cache:'no-store'});const t=await r.text();if(last===null)last=t;else if(t!==last)location.reload();}catch(e){}}check();setInterval(check,2000);})();
