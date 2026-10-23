@@ -7,10 +7,10 @@ h1{font-size:2.6rem;margin:.3em 0 0;color:#e50914;text-shadow:0 4px 20px rgba(22
 h2{font-size:1.2rem;font-weight:400;margin:.2em 0 .5em;opacity:.85}
 canvas{background:#0b0b2a;border:4px solid #e50914;border-radius:12px;max-width:96vw}
 p{font-size:1.3rem}
-</style><script src="sky.js?v=1792771200"></script><script src="sfx.js?v=1792771200"></script><script src="levels.js?v=1792771200"></script><script src="aliens.js?v=1792771200"></script></head>
+</style><script src="sky.js?v=1792775733"></script><script src="sfx.js?v=1792775733"></script><script src="levels.js?v=1792775733"></script><script src="aliens.js?v=1792775733"></script></head>
 <body><h1>Space Skater</h1><h2><a href="./" style="color:#fff">← Back to Career Day</a></h2>
 <canvas id="c" width="960" height="540"></canvas>
-<p>⬅️ ➡️ or A / D to skate &nbsp;•&nbsp; ⬆️ / W / Space to jump &nbsp;•&nbsp; B to fire laser &nbsp;•&nbsp; Dodge the aliens and reach your rocket! &nbsp;•&nbsp; 10 levels!</p>
+<p>⬅️ ➡️ or A / D to skate &nbsp;•&nbsp; ⬆️ / W / Space to jump &nbsp;•&nbsp; B to fire laser &nbsp;•&nbsp; M to mute &nbsp;•&nbsp; Dodge the aliens and reach your rocket! &nbsp;•&nbsp; 10 levels!</p>
 <script>
 const c=document.getElementById('c'),x=c.getContext('2d'),W=960,H=540,G=0.7;
 let lv=1,LV,plats,goal,best=1,card=0;try{best=Math.max(1,Math.min(10,+localStorage.getItem('ssBest')||1))}catch(e){}
@@ -63,4 +63,4 @@ if(state==='win'&&rocketY<goal.y-500)txt(lv<10?'🚀 BLAST OFF! On to Level '+(l
 if(state==='beat'){x.fillStyle='rgba(0,0,0,.6)';x.fillRect(0,0,W,H);txt('🏆 You beat Space Skater! 🏆',150,58,'#ffb300');txt('All 10 levels! You are a real space hero!',215,30);txt('Press SPACE to play again',280,30,'#7CFC00');levelSelect()}}
 (function loop(){try{update();draw()}catch(e){console.error(e)}requestAnimationFrame(loop)})();
 </script>
-<script src="music.js?v=1792771200"></script><script src="live-reload.js?v=1792771200"></script></body></html>
+<script src="music.js?v=1792775733"></script><script src="live-reload.js?v=1792775733"></script></body></html>
