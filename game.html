@@ -43,7 +43,7 @@ x.fillStyle='#4fc3f7';x.beginPath();x.arc(X+40,Y+70,10,0,7);x.fill();
 if(state==='win'){x.fillStyle=flame%6<3?'#ffb300':'#ff5722';x.beginPath();x.moveTo(X+25,Y+150);x.lineTo(X+40,Y+200+Math.random()*30);x.lineTo(X+55,Y+150);x.fill()}}
 function txt(s,y,sz,col){x.font='bold '+sz+'px system-ui';x.textAlign='center';x.fillStyle=col||'#fff';x.fillText(s,W/2,y)}
 function draw(){x.fillStyle='#0b0b2a';x.fillRect(0,0,W,H);x.fillStyle='#fff';for(const[sx,sy,r]of stars)x.fillRect(((sx-camX*0.3)%W+W)%W,sy,r,r);
-x.save();x.translate(-camX,-camY);x.fillStyle='#5d4037';x.beginPath();x.moveTo(1900,600);x.lineTo(3460,-280);x.lineTo(3700,600);x.fill();x.fillStyle='#fff';x.beginPath();x.moveTo(3360,-200);x.lineTo(3460,-280);x.lineTo(3560,-200);x.fill();
+drawSky(x,camX,camY);x.save();x.translate(-camX,-camY);x.fillStyle='#5d4037';x.beginPath();x.moveTo(1900,600);x.lineTo(3460,-280);x.lineTo(3700,600);x.fill();x.fillStyle='#fff';x.beginPath();x.moveTo(3360,-200);x.lineTo(3460,-280);x.lineTo(3560,-200);x.fill();
 for(const[a,b,w]of plats){x.fillStyle='#8e44ad';x.fillRect(a,b,w,H-b);x.fillStyle='#e50914';x.fillRect(a,b,w,10)}
 rocket(goal.x,state==='win'?rocketY:goal.y-0);
 for(const a of aliens)alien(a);if(state!=='win')astronaut(p.x,p.y);x.restore();
@@ -51,4 +51,4 @@ if(state==='lose'){x.fillStyle='rgba(0,0,0,.6)';x.fillRect(0,0,W,H);txt('Oh no! 
 if(state==='win'&&rocketY<goal.y-700){txt('🚀 BLAST OFF! You made it to space! 🚀',230,44,'#ffb300');txt('Press SPACE to play again',300,32)}}
 (function loop(){update();draw();requestAnimationFrame(loop)})();
 </script>
-<script src="sfx.js"></script><script src="music.js"></script><script src="live-reload.js"></script></body></html>
+<script src="sky.js"></script><script src="sfx.js"></script><script src="music.js"></script><script src="live-reload.js"></script></body></html>
