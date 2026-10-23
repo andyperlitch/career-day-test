@@ -7,7 +7,7 @@ h1{font-size:2.6rem;margin:.3em 0 0;color:#e50914;text-shadow:0 4px 20px rgba(22
 h2{font-size:1.2rem;font-weight:400;margin:.2em 0 .5em;opacity:.85}
 canvas{background:#0b0b2a;border:4px solid #e50914;border-radius:12px;max-width:96vw}
 p{font-size:1.3rem}
-</style></head>
+</style><script src="sky.js"></script><script src="sfx.js"></script></head>
 <body><h1>Space Skater</h1><h2><a href="./" style="color:#fff">← Back to Career Day</a></h2>
 <canvas id="c" width="960" height="540"></canvas>
 <p>⬅️ ➡️ or A / D to skate &nbsp;•&nbsp; ⬆️ / W / Space to jump &nbsp;•&nbsp; Dodge the aliens and reach your rocket!</p>
@@ -51,4 +51,4 @@ if(state==='lose'){x.fillStyle='rgba(0,0,0,.6)';x.fillRect(0,0,W,H);txt('Oh no! 
 if(state==='win'&&rocketY<goal.y-700){txt('🚀 BLAST OFF! You made it to space! 🚀',230,44,'#ffb300');txt('Press SPACE to play again',300,32)}}
 (function loop(){update();draw();requestAnimationFrame(loop)})();
 </script>
-<script src="sky.js"></script><script src="sfx.js"></script><script src="music.js"></script><script src="live-reload.js"></script></body></html>
+<script src="music.js"></script><script src="live-reload.js"></script></body></html>
