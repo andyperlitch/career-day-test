@@ -10,29 +10,29 @@ p{font-size:1.3rem}
 </style><script src="sky.js"></script><script src="sfx.js"></script></head>
 <body><h1>Space Skater</h1><h2><a href="./" style="color:#fff">← Back to Career Day</a></h2>
 <canvas id="c" width="960" height="540"></canvas>
-<p>⬅️ ➡️ or A / D to skate &nbsp;•&nbsp; ⬆️ / W / Space to jump &nbsp;•&nbsp; Dodge the aliens and reach your rocket!</p>
+<p>⬅️ ➡️ or A / D to skate &nbsp;•&nbsp; ⬆️ / W / Space to jump &nbsp;•&nbsp; B to fire laser &nbsp;•&nbsp; Dodge the aliens and reach your rocket!</p>
 <script>
 const c=document.getElementById('c'),x=c.getContext('2d'),W=960,H=540,G=0.7;
-const keys={};onkeydown=e=>{keys[e.key.toLowerCase()]=1;if([' ','arrowup','arrowdown','arrowleft','arrowright'].includes(e.key.toLowerCase()))e.preventDefault();if(state!=='play'&&(e.key===' '||e.key==='Enter'))reset()};onkeyup=e=>keys[e.key.toLowerCase()]=0;
+const keys={};onkeydown=e=>{if(e.key.toLowerCase()==='b'&&!e.repeat&&state==='play'){lasers.push({x:p.f>0?p.x+48:p.x-8,y:p.y+25,d:p.f,t:0});sfx.laser()}keys[e.key.toLowerCase()]=1;if([' ','arrowup','arrowdown','arrowleft','arrowright'].includes(e.key.toLowerCase()))e.preventDefault();if(state!=='play'&&(e.key===' '||e.key==='Enter'))reset()};onkeyup=e=>keys[e.key.toLowerCase()]=0;
 const plats=[[0,480,650],[760,480,450],[1300,400,200],[1560,480,2000],[1950,400,150],[2120,315,150],[2290,230,150],[2460,145,150],[2630,60,150],[2800,-25,150],[2970,-110,150],[3140,-195,150],[3310,-280,300]];
 const goal={x:3420,y:-430};
-let poofs=[],p,aliens,camX,camY=0,state,stars=[],flame=0,rocketY;
+let lasers=[],poofs=[],p,aliens,camX,camY=0,state,stars=[],flame=0,rocketY;
 for(let i=0;i<150;i++)stars.push([Math.random()*5000,Math.random()*H,Math.random()*2+1]);
-function reset(){p={x:60,y:400,vx:0,vy:0,w:40,h:56,on:false};camX=0;camY=0;state='play';rocketY=goal.y;
+function reset(){p={f:1,x:60,y:400,vx:0,vy:0,w:40,h:56,on:false};camX=0;camY=0;state='play';rocketY=goal.y;
 aliens=[[900,480,780,1190],[1650,480,1580,1900]].map(a=>({x:a[0],y:a[1]-40,min:a[2],max:a[3],d:1.6+Math.random()}))}
 reset();
 function update(){if(state!=='play')sfx.rolling(0,false);if(state==='win'){rocketY-=6;flame++;return}if(state!=='play')return;
 const L=keys['arrowleft']||keys['a'],R=keys['arrowright']||keys['d'];
-p.vx+= (R?0.6:0)-(L?0.6:0);p.vx*=0.92;p.vx=Math.max(-8,Math.min(8,p.vx));
+p.vx+= (R?0.6:0)-(L?0.6:0);p.vx*=0.92;if(R)p.f=1;if(L)p.f=-1;p.vx=Math.max(-8,Math.min(8,p.vx));
 if((keys['arrowup']||keys['w']||keys[' '])&&p.on){p.vy=-15;p.on=false;sfx.jump()}
 p.vy+=G;const px0=p.x;p.x+=p.vx;p.y+=p.vy;if(p.x<0)p.x=0;const wasOn=p.on;p.on=false;
 for(const[a,b,w]of plats)if(p.x+p.w>a&&p.x<a+w&&p.y+p.h>=b&&p.y+p.h-p.vy<=b+1){if(!wasOn&&p.vy>2)sfx.land();p.y=b-p.h;p.vy=0;p.on=true}
 for(const[a,b,w]of plats)if(p.x+p.w>a&&p.x<a+w&&p.y+p.h>b+4&&p.y<H){if(px0+p.w<=a+1){p.x=a-p.w;p.vx=0}else if(px0>=a+w-1){p.x=a+w;p.vx=0}}sfx.rolling(p.vx,p.on);if(p.y>H+100)state='lose';
 for(const a of aliens){a.x+=a.d;if(a.x<a.min||a.x>a.max-40)a.d*=-1;a.y+=Math.sin(Date.now()/200+a.min)*0.6;
-if(!a.dead&&p.x+p.w-8>a.x&&p.x+8<a.x+40&&p.y+p.h-6>a.y&&p.y+6<a.y+40){if(p.vy>0&&p.y+p.h-p.vy<=a.y+18){a.dead=1;p.vy=-11;sfx.squash();poofs.push({x:a.x+20,y:a.y+20,t:0})}else state='lose'}}aliens=aliens.filter(a=>!a.dead);
+if(!a.dead&&p.x+p.w-8>a.x&&p.x+8<a.x+40&&p.y+p.h-6>a.y&&p.y+6<a.y+40){if(p.vy>0&&p.y+p.h-p.vy<=a.y+18){a.dead=1;p.vy=-11;sfx.squash();poofs.push({x:a.x+20,y:a.y+20,t:0})}else state='lose'}}for(const l of lasers){l.x+=l.d*20;l.t++;for(const a of aliens)if(!a.dead&&l.x>a.x-10&&l.x<a.x+50&&l.y>a.y-10&&l.y<a.y+45){a.dead=1;l.t=99;sfx.squash();poofs.push({x:a.x+20,y:a.y+20,t:0})}}lasers=lasers.filter(l=>l.t<45);aliens=aliens.filter(a=>!a.dead);
 if(p.x+p.w>goal.x+20&&p.x<goal.x+60&&p.y<goal.y+45&&p.y+p.h>goal.y)state='win';
 camX=Math.max(0,Math.min(p.x-300,3700-W));camY=Math.min(0,p.y-260)}
-function astronaut(X,Y){x.fillStyle='#e50914';x.fillRect(X-4,Y+50,48,7);x.fillStyle='#333';x.beginPath();x.arc(X+6,Y+60,5,0,7);x.arc(X+34,Y+60,5,0,7);x.fill();
+function astronaut(X,Y,f){Y+=Math.sin(Date.now()/150)*2-8;x.fillStyle='rgba(0,229,255,.35)';x.beginPath();x.ellipse(X+20,Y+64,26,5,0,0,7);x.fill();x.fillStyle='#e50914';x.beginPath();x.ellipse(X+20,Y+53,26,5,0,0,7);x.fill();x.fillStyle='#00e5ff';x.fillRect(X+2,Y+56,36,3);x.fillStyle='#999';x.fillRect(f>0?X+30:X-8,Y+30,18,6);
 x.fillStyle='#fff';x.fillRect(X+8,Y+22,24,28);x.fillRect(X+4,Y+44,10,8);x.fillRect(X+26,Y+44,10,8);x.beginPath();x.arc(X+20,Y+14,15,0,7);x.fill();
 x.fillStyle='#4fc3f7';x.beginPath();x.ellipse(X+24,Y+14,9,7,0,0,7);x.fill();x.fillStyle='#e50914';x.fillRect(X+14,Y+30,12,6)}
 function alien(a){x.fillStyle='#7CFC00';x.beginPath();x.ellipse(a.x+20,a.y+24,20,16,0,0,7);x.fill();x.fillRect(a.x+8,a.y-4,4,12);x.fillRect(a.x+28,a.y-4,4,12);
@@ -46,7 +46,7 @@ function draw(){x.fillStyle='#0b0b2a';x.fillRect(0,0,W,H);x.fillStyle='#fff';for
 drawSky(x,camX,camY);x.save();x.translate(-camX,-camY);x.fillStyle='#5d4037';x.beginPath();x.moveTo(1900,600);x.lineTo(3460,-280);x.lineTo(3700,600);x.fill();x.fillStyle='#fff';x.beginPath();x.moveTo(3360,-200);x.lineTo(3460,-280);x.lineTo(3560,-200);x.fill();
 for(const[a,b,w]of plats){x.fillStyle='#8e44ad';x.fillRect(a,b,w,H-b);x.fillStyle='#e50914';x.fillRect(a,b,w,10)}
 rocket(goal.x,state==='win'?rocketY:goal.y-0);
-for(const a of aliens)alien(a);for(const f of poofs){f.t++;x.globalAlpha=Math.max(0,1-f.t/30);x.fillStyle='#7CFC00';for(let i=0;i<8;i++){const g=i*Math.PI/4;x.beginPath();x.arc(f.x+Math.cos(g)*f.t*2,f.y+Math.sin(g)*f.t*2,5,0,7);x.fill()}x.font='bold 26px system-ui';x.textAlign='center';x.fillStyle='#ffeb3b';x.fillText('SQUISH!',f.x,f.y-20-f.t);x.globalAlpha=1}poofs=poofs.filter(f=>f.t<30);if(state!=='win')astronaut(p.x,p.y);x.restore();
+for(const l of lasers){x.strokeStyle='#ff1744';x.lineWidth=6;x.shadowColor='#ff1744';x.shadowBlur=15;x.beginPath();x.moveTo(l.x,l.y);x.lineTo(l.x-l.d*50,l.y);x.stroke();x.strokeStyle='#fff';x.lineWidth=2;x.stroke();x.shadowBlur=0}for(const a of aliens)alien(a);for(const f of poofs){f.t++;x.globalAlpha=Math.max(0,1-f.t/30);x.fillStyle='#7CFC00';for(let i=0;i<8;i++){const g=i*Math.PI/4;x.beginPath();x.arc(f.x+Math.cos(g)*f.t*2,f.y+Math.sin(g)*f.t*2,5,0,7);x.fill()}x.font='bold 26px system-ui';x.textAlign='center';x.fillStyle='#ffeb3b';x.fillText('SQUISH!',f.x,f.y-20-f.t);x.globalAlpha=1}poofs=poofs.filter(f=>f.t<30);if(state!=='win')astronaut(p.x,p.y,p.f);x.restore();
 if(state==='lose'){x.fillStyle='rgba(0,0,0,.6)';x.fillRect(0,0,W,H);txt('Oh no! 👽',230,64,'#7CFC00');txt('Press SPACE to try again',300,36)}
 if(state==='win'&&rocketY<goal.y-700){txt('🚀 BLAST OFF! You made it to space! 🚀',230,44,'#ffb300');txt('Press SPACE to play again',300,32)}}
 (function loop(){update();draw();requestAnimationFrame(loop)})();
