@@ -21,13 +21,13 @@ for(let i=0;i<150;i++)stars.push([Math.random()*5000,Math.random()*H,Math.random
 function reset(){p={x:60,y:400,vx:0,vy:0,w:40,h:56,on:false};camX=0;state='play';rocketY=goal.y;
 aliens=[[900,480,800,1250],[2050,420,1990,2350],[2550,360,2510,2720],[3300,480,3150,3780],[3500,480,3150,3780]].map(a=>({x:a[0],y:a[1]-40,min:a[2],max:a[3],d:1.6+Math.random()}))}
 reset();
-function update(){if(state==='win'){rocketY-=6;flame++;return}if(state!=='play')return;
+function update(){if(state!=='play')sfx.rolling(0,false);if(state==='win'){rocketY-=6;flame++;return}if(state!=='play')return;
 const L=keys['arrowleft']||keys['a'],R=keys['arrowright']||keys['d'];
 p.vx+= (R?0.6:0)-(L?0.6:0);p.vx*=0.92;p.vx=Math.max(-8,Math.min(8,p.vx));
-if((keys['arrowup']||keys['w']||keys[' '])&&p.on){p.vy=-15;p.on=false}
-p.vy+=G;p.x+=p.vx;p.y+=p.vy;if(p.x<0)p.x=0;p.on=false;
-for(const[a,b,w]of plats)if(p.x+p.w>a&&p.x<a+w&&p.y+p.h>=b&&p.y+p.h-p.vy<=b+1){p.y=b-p.h;p.vy=0;p.on=true}
-if(p.y>H+100)state='lose';
+if((keys['arrowup']||keys['w']||keys[' '])&&p.on){p.vy=-15;p.on=false;sfx.jump()}
+p.vy+=G;p.x+=p.vx;p.y+=p.vy;if(p.x<0)p.x=0;const wasOn=p.on;p.on=false;
+for(const[a,b,w]of plats)if(p.x+p.w>a&&p.x<a+w&&p.y+p.h>=b&&p.y+p.h-p.vy<=b+1){if(!wasOn&&p.vy>2)sfx.land();p.y=b-p.h;p.vy=0;p.on=true}
+sfx.rolling(p.vx,p.on);if(p.y>H+100)state='lose';
 for(const a of aliens){a.x+=a.d;if(a.x<a.min||a.x>a.max-40)a.d*=-1;a.y+=Math.sin(Date.now()/200+a.min)*0.6;
 if(p.x+p.w-8>a.x&&p.x+8<a.x+40&&p.y+p.h-6>a.y&&p.y+6<a.y+40)state='lose'}
 if(p.x+p.w>goal.x&&p.x<goal.x+80&&p.y+p.h>goal.y)state='win';
@@ -51,4 +51,4 @@ if(state==='lose'){x.fillStyle='rgba(0,0,0,.6)';x.fillRect(0,0,W,H);txt('Oh no! 
 if(state==='win'&&rocketY<-200){txt('🚀 BLAST OFF! You made it to space! 🚀',230,44,'#ffb300');txt('Press SPACE to play again',300,32)}}
 (function loop(){update();draw();requestAnimationFrame(loop)})();
 </script>
-<script src="music.js"></script><script src="live-reload.js"></script></body></html>
+<script src="sfx.js"></script><script src="music.js"></script><script src="live-reload.js"></script></body></html>
