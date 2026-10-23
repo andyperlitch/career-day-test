@@ -25,12 +25,12 @@ function update(){if(state!=='play')sfx.rolling(0,false);if(state==='win'){rocke
 const L=keys['arrowleft']||keys['a'],R=keys['arrowright']||keys['d'];
 p.vx+= (R?0.6:0)-(L?0.6:0);p.vx*=0.92;p.vx=Math.max(-8,Math.min(8,p.vx));
 if((keys['arrowup']||keys['w']||keys[' '])&&p.on){p.vy=-15;p.on=false;sfx.jump()}
-p.vy+=G;p.x+=p.vx;p.y+=p.vy;if(p.x<0)p.x=0;const wasOn=p.on;p.on=false;
+p.vy+=G;const px0=p.x;p.x+=p.vx;p.y+=p.vy;if(p.x<0)p.x=0;const wasOn=p.on;p.on=false;
 for(const[a,b,w]of plats)if(p.x+p.w>a&&p.x<a+w&&p.y+p.h>=b&&p.y+p.h-p.vy<=b+1){if(!wasOn&&p.vy>2)sfx.land();p.y=b-p.h;p.vy=0;p.on=true}
-sfx.rolling(p.vx,p.on);if(p.y>H+100)state='lose';
+for(const[a,b,w]of plats)if(p.x+p.w>a&&p.x<a+w&&p.y+p.h>b+4&&p.y<H){if(px0+p.w<=a+1){p.x=a-p.w;p.vx=0}else if(px0>=a+w-1){p.x=a+w;p.vx=0}}sfx.rolling(p.vx,p.on);if(p.y>H+100)state='lose';
 for(const a of aliens){a.x+=a.d;if(a.x<a.min||a.x>a.max-40)a.d*=-1;a.y+=Math.sin(Date.now()/200+a.min)*0.6;
 if(p.x+p.w-8>a.x&&p.x+8<a.x+40&&p.y+p.h-6>a.y&&p.y+6<a.y+40)state='lose'}
-if(p.x+p.w>goal.x&&p.x<goal.x+80&&p.y+p.h>goal.y)state='win';
+if(p.x+p.w>goal.x+20&&p.x<goal.x+60&&p.y<goal.y+45&&p.y+p.h>goal.y)state='win';
 camX=Math.max(0,Math.min(p.x-300,3700-W));camY=Math.min(0,p.y-260)}
 function astronaut(X,Y){x.fillStyle='#e50914';x.fillRect(X-4,Y+50,48,7);x.fillStyle='#333';x.beginPath();x.arc(X+6,Y+60,5,0,7);x.arc(X+34,Y+60,5,0,7);x.fill();
 x.fillStyle='#fff';x.fillRect(X+8,Y+22,24,28);x.fillRect(X+4,Y+44,10,8);x.fillRect(X+26,Y+44,10,8);x.beginPath();x.arc(X+20,Y+14,15,0,7);x.fill();
