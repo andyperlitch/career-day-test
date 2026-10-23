@@ -7,12 +7,12 @@ h1{font-size:2.6rem;margin:.3em 0 0;color:#e50914;text-shadow:0 4px 20px rgba(22
 h2{font-size:1.2rem;font-weight:400;margin:.2em 0 .5em;opacity:.85}
 canvas{background:#0b0b2a;border:4px solid #e50914;border-radius:12px;max-width:96vw}
 p{font-size:1.3rem}
-</style><script src="sky.js?v=1792776265"></script><script src="sfx.js?v=1792776265"></script><script src="levels.js?v=1792776265"></script><script src="aliens.js?v=1792776265"></script><script src="highscores.js?v=1792776265"></script></head>
+</style><script src="sky.js?v=1792776474"></script><script src="sfx.js?v=1792776474"></script><script src="levels.js?v=1792776474"></script><script src="aliens.js?v=1792776474"></script><script src="highscores.js?v=1792776474"></script></head>
 <body><h1>Space Skater</h1>
 <canvas id="c" width="960" height="540"></canvas>
 <p>⬅️ ➡️ or A / D to skate &nbsp;•&nbsp; ⬆️ / W / Space to jump &nbsp;•&nbsp; B to fire laser &nbsp;•&nbsp; M to mute &nbsp;•&nbsp; Dodge the aliens and reach your rocket! &nbsp;•&nbsp; 10 levels!</p>
 <script>
-const c=document.getElementById('c'),x=c.getContext('2d'),W=960,H=540,G=0.7;
+const c=document.getElementById('c'),x=c.getContext('2d'),W=960,H=540,G=0.55;
 let lv=1,LV,plats,goal,best=1,card=0;try{best=Math.max(1,Math.min(10,+localStorage.getItem('ssBest')||1))}catch(e){}
 function saveBest(){try{localStorage.setItem('ssBest',best)}catch(e){}}
 const keys={};onkeydown=e=>{if(window.HS&&HS.active)return;const k=e.key.toLowerCase();if(k==='b'&&!e.repeat&&state==='play'&&card<=60){lasers.push({x:p.f>0?p.x+48:p.x-8,y:p.y+25,d:p.f,t:0});(sfx.laser&&sfx.laser())}keys[k]=1;if([' ','arrowup','arrowdown','arrowleft','arrowright'].includes(k))e.preventDefault();
@@ -35,12 +35,12 @@ function update(){if(state!=='play')sfx.rolling(0,false);if(state==='win'){rocke
 if(card>0)card--;if(card>60){camX=0;return}lvT++;
 const L=keys['arrowleft']||keys['a'],R=keys['arrowright']||keys['d'];
 p.vx+= (R?0.6:0)-(L?0.6:0);p.vx*=0.92;if(R)p.f=1;if(L)p.f=-1;p.vx=Math.max(-8,Math.min(8,p.vx));
-if((keys['arrowup']||keys['w']||keys[' '])&&p.on){p.vy=-15;p.on=false;(sfx.jump&&sfx.jump())}
+if((keys['arrowup']||keys['w']||keys[' '])&&p.on){p.vy=-13.3;p.on=false;(sfx.jump&&sfx.jump())}
 p.vy+=G;const px0=p.x;p.x+=p.vx;p.y+=p.vy;if(p.x<0)p.x=0;const wasOn=p.on;p.on=false;
 for(const[a,b,w]of plats)if(p.x+p.w>a&&p.x<a+w&&p.y+p.h>=b&&p.y+p.h-p.vy<=b+1){if(!wasOn&&p.vy>2)(sfx.land&&sfx.land());p.y=b-p.h;p.vy=0;p.on=true}
 for(const[a,b,w]of plats)if(p.x+p.w>a&&p.x<a+w&&p.y+p.h>b+4&&p.y<H){if(px0+p.w<=a+1){p.x=a-p.w;p.vx=0}else if(px0>=a+w-1){p.x=a+w;p.vx=0}}sfx.rolling(p.vx,p.on);if(p.y>H+100)state='lose';
 for(const a of aliens){ALIENS.move(a,p);
-if(!a.dead&&p.x+p.w-8>a.x&&p.x+8<a.x+a.w&&p.y+p.h-6>a.y&&p.y+6<a.y+a.h){if(p.vy>0&&p.y+p.h-p.vy<=a.y+Math.max(18,a.h*0.5)+Math.abs(a.vy||0)){p.vy=-11;squish(a)}else state='lose'}}
+if(!a.dead&&p.x+p.w-8>a.x&&p.x+8<a.x+a.w&&p.y+p.h-6>a.y&&p.y+6<a.y+a.h){if(p.vy>0&&p.y+p.h-p.vy<=a.y+Math.max(18,a.h*0.5)+Math.abs(a.vy||0)){p.vy=-9.75;squish(a)}else state='lose'}}
 for(const l of lasers){l.x+=l.d*20;l.t++;for(const a of aliens)if(!a.dead&&l.t<99&&l.x>a.x-10&&l.x<a.x+a.w+10&&l.y>a.y-10&&l.y<a.y+a.h+5){l.t=99;if(--a.hp<=0)squish(a);else{a.flash=8;(sfx.land&&sfx.land())}}}lasers=lasers.filter(l=>l.t<45);aliens=aliens.filter(a=>!a.dead);
 if(p.x+p.w>goal.x+20&&p.x<goal.x+60&&p.y<goal.y+45&&p.y+p.h>goal.y){state='win';const lb=500*lv,tb=Math.max(0,Math.round((120-lvT/60)*10));score+=lb+tb;bonusMsg='Level bonus +'+lb+'  •  Time bonus +'+tb}
 camX=Math.max(0,Math.min(p.x-300,LV.end-W));camY=Math.min(0,p.y-260)}
@@ -67,4 +67,4 @@ if(state==='win'&&rocketY<goal.y-500)txt(lv<10?'🚀 BLAST OFF! On to Level '+(l
 if(state==='beat'){x.fillStyle='rgba(0,0,0,.6)';x.fillRect(0,0,W,H);txt('🏆 You beat Space Skater! 🏆',150,58,'#ffb300');txt('All 10 levels! You are a real space hero!',215,30);txt('Final score: '+score.toLocaleString(),255,30,'#ffeb3b');txt('Press SPACE to play again',300,30,'#7CFC00');levelSelect()}}
 let shownPanel=null;(function loop(){try{const want=state==='menu'||state==='beat'||(state==='lose'&&submitted);if(want!==shownPanel&&window.HS&&HS.show){shownPanel=want;HS.show(want)}}catch(e){}try{update();draw()}catch(e){console.error(e)}requestAnimationFrame(loop)})();
 </script>
-<script src="music.js?v=1792776265"></script><script src="live-reload.js?v=1792776265"></script></body></html>
+<script src="music.js?v=1792776474"></script><script src="live-reload.js?v=1792776474"></script></body></html>
