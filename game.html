@@ -7,7 +7,7 @@ h1{font-size:2.6rem;margin:.3em 0 0;color:#e50914;text-shadow:0 4px 20px rgba(22
 h2{font-size:1.2rem;font-weight:400;margin:.2em 0 .5em;opacity:.85}
 canvas{background:#0b0b2a;border:4px solid #e50914;border-radius:12px;max-width:96vw}
 p{font-size:1.3rem}
-</style><script src="sky.js?v=1792776474"></script><script src="sfx.js?v=1792776474"></script><script src="levels.js?v=1792776474"></script><script src="aliens.js?v=1792776474"></script><script src="highscores.js?v=1792776474"></script></head>
+</style><script src="sky.js?v=1793068710"></script><script src="sfx.js?v=1793068710"></script><script src="levels.js?v=1793068710"></script><script src="aliens.js?v=1793068710"></script><script src="highscores.js?v=1793068710"></script></head>
 <body><h1>Space Skater</h1>
 <canvas id="c" width="960" height="540"></canvas>
 <p>⬅️ ➡️ or A / D to skate &nbsp;•&nbsp; ⬆️ / W / Space to jump &nbsp;•&nbsp; B to fire laser &nbsp;•&nbsp; M to mute &nbsp;•&nbsp; Dodge the aliens and reach your rocket! &nbsp;•&nbsp; 10 levels!</p>
@@ -65,6 +65,6 @@ if(state==='menu'){x.fillStyle='rgba(0,0,0,.6)';x.fillRect(0,0,W,H);txt('🛹 Sp
 if(state==='lose'){x.fillStyle='rgba(0,0,0,.6)';x.fillRect(0,0,W,H);txt('Oh no! 👽',200,64,'#7CFC00');txt('Press SPACE to try Level '+lv+' again',260,36);if(!submitted&&lvStart>0){x.fillStyle='#e50914';x.fillRect(W/2-130,295,260,45);txt('Submit score '+lvStart.toLocaleString()+' (S)',326,22)}else txt('Score: '+lvStart.toLocaleString(),326,24,'#ffeb3b');levelSelect()}
 if(state==='win'&&rocketY<goal.y-500)txt(lv<10?'🚀 BLAST OFF! On to Level '+(lv+1)+'! 🚀':'🚀 BLAST OFF! 🚀',230,44,'#ffb300');if(state==='win')txt(bonusMsg,280,26,'#ffeb3b');
 if(state==='beat'){x.fillStyle='rgba(0,0,0,.6)';x.fillRect(0,0,W,H);txt('🏆 You beat Space Skater! 🏆',150,58,'#ffb300');txt('All 10 levels! You are a real space hero!',215,30);txt('Final score: '+score.toLocaleString(),255,30,'#ffeb3b');txt('Press SPACE to play again',300,30,'#7CFC00');levelSelect()}}
-let shownPanel=null;(function loop(){try{const want=state==='menu'||state==='beat'||(state==='lose'&&submitted);if(want!==shownPanel&&window.HS&&HS.show){shownPanel=want;HS.show(want)}}catch(e){}try{update();draw()}catch(e){console.error(e)}requestAnimationFrame(loop)})();
+let shownPanel=null;(function loop(){try{const want=true;if(want!==shownPanel&&window.HS&&HS.show){shownPanel=want;HS.show(want)}}catch(e){}try{update();draw()}catch(e){console.error(e)}requestAnimationFrame(loop)})();
 </script>
-<script src="music.js?v=1792776474"></script><script src="live-reload.js?v=1792776474"></script></body></html>
+<script src="music.js?v=1793068710"></script><script src="live-reload.js?v=1793068710"></script></body></html>
