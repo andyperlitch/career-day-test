@@ -36,7 +36,7 @@ async function go(){if(busy)return;const s=letters.map(i=>A[i]).join('');if(!ok(
  busy=true;warn('Sending…');try{await submit(s,pend.score,pend.level);try{localStorage.setItem('ssIni',s)}catch(e){}pend.note='';close();await fetchTop()}catch(e){warn('Could not save score (offline?). Try again or skip.')}busy=false}
 function close(){pick.style.display='none';api.active=false;show(true)}
 function show(v){if(panel)panel.style.display=v?'block':'none'}
-function init(){panel=el('<div id="hsPanel"></div>');const cv=document.getElementById('c');cv.insertAdjacentElement('afterend',panel);
+function init(){panel=el('<div id="hsPanel"></div>');const cv=document.getElementById('c');const ctl=cv.nextElementSibling&&cv.nextElementSibling.tagName==='P'?cv.nextElementSibling:cv;ctl.insertAdjacentElement('afterend',panel);
  pick=el(`<div id="hsPick"><div class="box"><h3>NEW HIGH SCORE!</h3><div class="sc"></div><div class="wheels">${[0,1,2].map(i=>`<div class="w" data-i="${i}"><button class="up">▲</button><div class="L">A</div><button class="dn">▼</button></div>`).join('')}</div><div class="warn"></div><button class="go">Submit ✔</button><button class="go skip">Skip</button><div style="opacity:.7;margin-top:8px">⬆️⬇️ change letter • ⬅️➡️ move • Enter to submit</div></div></div>`);
  document.body.appendChild(pick);
  pick.querySelectorAll('.w').forEach((w,i)=>{w.querySelector('.up').onclick=()=>spin(i,-1);w.querySelector('.dn').onclick=()=>spin(i,1);w.querySelector('.L').onclick=()=>{cur=i;draw()}});
